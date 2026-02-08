@@ -23,6 +23,12 @@ public class Influencer {
     private String username;
 
     @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false, updatable = false)
+    private String role;
+
+    @Column(nullable = false)
     private String platform;
 
     @Column(nullable = false)
@@ -43,6 +49,9 @@ public class Influencer {
     public void onCreate(){
         if(this.totalEarnings == null){
             this.totalEarnings = 0.0;
+        }
+        if(this.role == null){
+            this.role = "ROLE_INFLUENCER";
         }
     }
 

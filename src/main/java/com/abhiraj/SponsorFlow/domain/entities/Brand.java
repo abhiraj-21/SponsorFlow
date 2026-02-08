@@ -23,6 +23,12 @@ public class Brand {
     private String name;
 
     @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false, updatable = false)
+    private String role;
+
+    @Column(nullable = false)
     private Double totalBudget;
 
     @Column(nullable = false)
@@ -42,6 +48,9 @@ public class Brand {
     @PrePersist
     public void onCreate(){
         this.reservedBudget = 0.0;
+        if(this.role == null){
+            this.role = "ROLE_BRAND";
+        }
     }
 
 }
