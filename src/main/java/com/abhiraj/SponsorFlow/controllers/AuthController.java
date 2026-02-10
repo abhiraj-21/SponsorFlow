@@ -5,6 +5,7 @@ import com.abhiraj.SponsorFlow.domain.dtos.request.InfluencerRequestDto;
 import com.abhiraj.SponsorFlow.domain.dtos.request.LoginRequestDto;
 import com.abhiraj.SponsorFlow.domain.dtos.response.BrandResponseDto;
 import com.abhiraj.SponsorFlow.domain.dtos.response.InfluencerResponseDto;
+import com.abhiraj.SponsorFlow.domain.dtos.response.JwtResponseDto;
 import com.abhiraj.SponsorFlow.services.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +33,13 @@ public class AuthController {
     }
 
     @PostMapping("/login/influencer")
-    public ResponseEntity<InfluencerResponseDto> loginInfluencer(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity<JwtResponseDto> loginInfluencer(@RequestBody LoginRequestDto loginRequestDto){
         return ResponseEntity.ok(authService.verifyInfluencer(loginRequestDto));
+    }
+
+    @PostMapping("/login/brand")
+    public ResponseEntity<JwtResponseDto> loginBrand(@RequestBody LoginRequestDto loginRequestDto){
+        return ResponseEntity.ok(authService.verifyBrand(loginRequestDto));
     }
 
 }

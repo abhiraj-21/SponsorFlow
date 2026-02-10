@@ -5,21 +5,27 @@ import com.abhiraj.SponsorFlow.domain.dtos.request.InfluencerRequestDto;
 import com.abhiraj.SponsorFlow.domain.dtos.request.LoginRequestDto;
 import com.abhiraj.SponsorFlow.domain.dtos.response.BrandResponseDto;
 import com.abhiraj.SponsorFlow.domain.dtos.response.InfluencerResponseDto;
+import com.abhiraj.SponsorFlow.domain.dtos.response.JwtResponseDto;
 import com.abhiraj.SponsorFlow.domain.entities.Brand;
 import com.abhiraj.SponsorFlow.domain.entities.Influencer;
+import com.abhiraj.SponsorFlow.jwt.JwtService;
 import com.abhiraj.SponsorFlow.mappings.BrandMappings;
 import com.abhiraj.SponsorFlow.mappings.InfluencerMappings;
 import com.abhiraj.SponsorFlow.repositories.BrandRepository;
 import com.abhiraj.SponsorFlow.repositories.InfluencerRepository;
+import com.abhiraj.SponsorFlow.security.SecurityUser;
 import com.abhiraj.SponsorFlow.services.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
@@ -28,6 +34,8 @@ public class AuthServiceImpl implements AuthService {
     private final InfluencerMappings influencerMappings;
     private final InfluencerRepository influencerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     @Override
     @Transactional
@@ -49,10 +57,35 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public InfluencerResponseDto verifyInfluencer(LoginRequestDto loginRequestDto) {
+    public JwtResponseDto verifyInfluencer(LoginRequestDto loginRequestDto) {
         Influencer influencer = influencerRepository.findByUsername(loginRequestDto.getName()).orElseThrow(() ->
                 new UsernameNotFoundException("No influencer with username: " + loginRequestDto.getName())
         );
-        return influencerMappings.influencerToResponse(influencer);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequestDto.getName(),
+                        loginRequestDto.getPassword()
+                )
+        );
+        if(!authentication.isAuthenticated()){
+            throw new BadCredentialsException("Invalid username or password");
+        }
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        return jwtService.generateToken(securityUser);
+    }
+
+    @Override
+    public JwtResponseDto verifyBrand(LoginRequestDto loginRequestDto) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequestDto.getName(),
+                        loginRequestDto.getPassword()
+                )
+        );
+        if(!authentication.isAuthenticated()){
+            throw new BadCredentialsException("Invalid name or password");
+        }
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        return jwtService.generateToken(securityUser);
     }
 }
