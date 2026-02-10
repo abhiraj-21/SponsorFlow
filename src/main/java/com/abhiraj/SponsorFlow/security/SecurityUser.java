@@ -23,12 +23,12 @@ public class SecurityUser implements UserDetails {
     SecurityUser(Influencer influencer){
         this.password = influencer.getPassword();
         this.role = influencer.getRole();
-        this.username = influencer.getUsername();
+        this.username = "INFLUENCER:"+influencer.getUsername();
     }
 
     SecurityUser(Brand brand){
         this.role = brand.getRole();
-        this.username = brand.getName();
+        this.username = "BRAND:"+brand.getName();
         this.password = brand.getPassword();
     }
 

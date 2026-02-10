@@ -58,33 +58,27 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public JwtResponseDto verifyInfluencer(LoginRequestDto loginRequestDto) {
-        Influencer influencer = influencerRepository.findByUsername(loginRequestDto.getName()).orElseThrow(() ->
-                new UsernameNotFoundException("No influencer with username: " + loginRequestDto.getName())
-        );
+        String identity = "INFLUENCER:" + loginRequestDto.getName();
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequestDto.getName(),
+                        identity,
                         loginRequestDto.getPassword()
                 )
         );
-        if(!authentication.isAuthenticated()){
-            throw new BadCredentialsException("Invalid username or password");
-        }
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         return jwtService.generateToken(securityUser);
     }
 
     @Override
+    @Transactional
     public JwtResponseDto verifyBrand(LoginRequestDto loginRequestDto) {
+        String identity = "BRAND:" + loginRequestDto.getName();
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequestDto.getName(),
+                        identity,
                         loginRequestDto.getPassword()
                 )
         );
-        if(!authentication.isAuthenticated()){
-            throw new BadCredentialsException("Invalid name or password");
-        }
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         return jwtService.generateToken(securityUser);
     }

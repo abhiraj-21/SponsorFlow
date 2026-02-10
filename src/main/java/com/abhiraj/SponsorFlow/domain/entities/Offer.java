@@ -4,6 +4,8 @@ import com.abhiraj.SponsorFlow.domain.OfferStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "offer")
 @Getter
@@ -28,7 +30,7 @@ public class Offer {
     private Influencer influencer;
 
     @Column(nullable = false)
-    private Double amount;
+    private BigDecimal amount;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

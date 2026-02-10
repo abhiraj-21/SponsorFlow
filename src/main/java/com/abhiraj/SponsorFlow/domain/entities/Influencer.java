@@ -3,6 +3,7 @@ package com.abhiraj.SponsorFlow.domain.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class Influencer {
     private Double engagementRate;
 
     @Column(nullable = false)
-    private Double totalEarnings;
+    private BigDecimal totalEarnings;
 
     @OneToMany(mappedBy = "influencer")
     @Builder.Default
@@ -48,7 +49,7 @@ public class Influencer {
     @PrePersist
     public void onCreate(){
         if(this.totalEarnings == null){
-            this.totalEarnings = 0.0;
+            this.totalEarnings = new BigDecimal(0);
         }
         if(this.role == null){
             this.role = "ROLE_INFLUENCER";

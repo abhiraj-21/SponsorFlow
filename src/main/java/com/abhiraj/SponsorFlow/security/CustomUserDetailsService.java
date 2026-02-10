@@ -10,8 +10,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -20,17 +18,24 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final BrandRepository brandRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Influencer> influencer = influencerRepository.findByUsername(username);
-        if(influencer.isPresent()){
-            return new SecurityUser(influencer.get());
+    public UserDetails loadUserByUsername(String identity) {
+
+        if (identity.startsWith("INFLUENCER:")) {
+            String username = identity.substring("INFLUENCER:".length());
+            Influencer influencer = influencerRepository.findByUsername(username)
+                    .orElseThrow(() ->
+                            new UsernameNotFoundException("Influencer not found"));
+            return new SecurityUser(influencer);
         }
 
-        Optional<Brand> brand = brandRepository.findByName(username);
-        if(brand.isPresent()){
-            return new SecurityUser(brand.get());
+        if (identity.startsWith("BRAND:")) {
+            String name = identity.substring("BRAND:".length());
+            Brand brand = brandRepository.findByName(name)
+                    .orElseThrow(() ->
+                            new UsernameNotFoundException("Brand not found"));
+            return new SecurityUser(brand);
         }
 
-        throw new UsernameNotFoundException("No influencer or brand with username "+username);
+        throw new UsernameNotFoundException("Invalid identity format");
     }
 }

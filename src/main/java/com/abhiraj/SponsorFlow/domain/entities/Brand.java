@@ -3,6 +3,7 @@ package com.abhiraj.SponsorFlow.domain.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +30,10 @@ public class Brand {
     private String role;
 
     @Column(nullable = false)
-    private Double totalBudget;
+    private BigDecimal totalBudget;
 
     @Column(nullable = false)
-    private Double reservedBudget;
+    private BigDecimal reservedBudget;
 
     @OneToMany(mappedBy = "brand")
     @ToString.Exclude
@@ -41,13 +42,13 @@ public class Brand {
 
     //@Transient would not create a database column but would allow us to use getAvailableBudget() method whenever needed
     @Transient
-    public Double getAvailableBudget(){
-        return this.totalBudget - (this.reservedBudget != null ? this.reservedBudget : 0.0);
+    public BigDecimal getAvailableBudget(){
+        return this.totalBudget.subtract(this.reservedBudget != null ? this.reservedBudget : new BigDecimal(0));
     }
 
     @PrePersist
     public void onCreate(){
-        this.reservedBudget = 0.0;
+        this.reservedBudget = new BigDecimal(0);
         if(this.role == null){
             this.role = "ROLE_BRAND";
         }
