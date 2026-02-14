@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
         Influencer influencer = influencerMappings.requestToInfluencer(influencerRequestDto);
         influencer.setPassword(passwordEncoder.encode(influencer.getPassword()));
         Influencer savedInfluencer = influencerRepository.save(influencer);
-        return influencerMappings.influencerToResponse(savedInfluencer);
+        return influencerMappings.influencerToResponse(savedInfluencer, true);
     }
 
     @Override
