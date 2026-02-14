@@ -52,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
         Brand brand = brandMappings.requestToBrand(brandRequestDto);
         brand.setPassword(passwordEncoder.encode(brand.getPassword()));
         Brand savedBrand = brandRepository.save(brand);
-        return brandMappings.brandToResponse(savedBrand);
+        return brandMappings.brandToResponse(savedBrand, true);
     }
 
     @Override
