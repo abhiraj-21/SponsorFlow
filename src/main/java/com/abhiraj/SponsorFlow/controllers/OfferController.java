@@ -1,6 +1,7 @@
 package com.abhiraj.SponsorFlow.controllers;
 
 import com.abhiraj.SponsorFlow.domain.dtos.request.OfferRequestDto;
+import com.abhiraj.SponsorFlow.domain.dtos.request.OfferUpdateRequestDto;
 import com.abhiraj.SponsorFlow.domain.dtos.response.OfferResponseDto;
 import com.abhiraj.SponsorFlow.services.OfferService;
 import jakarta.validation.Valid;
@@ -32,6 +33,11 @@ public class OfferController {
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
         return ResponseEntity.ok(offerService.getAllOffers(pageable));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<OfferResponseDto> updateStatus(@RequestBody OfferUpdateRequestDto offerUpdateRequestDto, @PathVariable Long id){
+        return ResponseEntity.ok(offerService.updateOfferStatus(offerUpdateRequestDto, id));
     }
 
 }
