@@ -3,6 +3,8 @@ package com.abhiraj.SponsorFlow.controllers;
 import com.abhiraj.SponsorFlow.domain.dtos.request.InfluencerUpdateRequestDto;
 import com.abhiraj.SponsorFlow.domain.dtos.response.InfluencerResponseDto;
 import com.abhiraj.SponsorFlow.services.InfluencerService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,16 +18,22 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/influencer")
 @RequiredArgsConstructor
+@Tag(
+        name="Influencer Management",
+        description = "Endpoints for managing Influencer profiles, visibility, and performance metrics."
+)
 public class InfluencerController {
 
     private final InfluencerService influencerService;
 
     @GetMapping("/{id}")
+    @Operation(summary = "Retrieve public profile details of a specific Influencer.")
     public ResponseEntity<InfluencerResponseDto> getInfluencerById(@PathVariable Long id){
         return ResponseEntity.ok(influencerService.getById(id));
     }
 
     @GetMapping
+    @Operation(summary = "Retrieve paginated and sortable list of registered Influencers.")
     public ResponseEntity<Page<InfluencerResponseDto>> getAllInfluencers(@RequestParam(required = false, defaultValue = "0") int pageNo,
                                                                          @RequestParam(required = false, defaultValue = "5") int pageSize,
                                                                          @RequestParam(required = false, defaultValue = "followerCount") String sortBy,
@@ -42,11 +50,13 @@ public class InfluencerController {
     }
 
     @GetMapping("/me")
+    @Operation(summary = "Retrieve authenticated Influencer's own profile including earnings.")
     public ResponseEntity<InfluencerResponseDto> getMyProfile(){
         return ResponseEntity.ok(influencerService.getLoggedInUser());
     }
 
     @PatchMapping("/me")
+    @Operation(summary = "Update authenticated Influencer profile details such as engagement rate or follower count.")
     public ResponseEntity<InfluencerResponseDto> updateInfluencerDetails(@Valid @RequestBody InfluencerUpdateRequestDto influencerUpdateRequestDto){
         return ResponseEntity.ok(influencerService.updateDetails(influencerUpdateRequestDto));
     }
