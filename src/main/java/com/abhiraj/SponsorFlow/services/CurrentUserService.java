@@ -27,6 +27,10 @@ public class CurrentUserService {
         return auth.getName();
     }
 
+    public boolean isBrand(){
+        return getIdentity().startsWith("BRAND:");
+    }
+
     public Influencer getCurrentInfluencer() {
         String identity = getIdentity();
 

@@ -12,6 +12,8 @@ import com.abhiraj.SponsorFlow.repositories.OfferRepository;
 import com.abhiraj.SponsorFlow.services.CurrentUserService;
 import com.abhiraj.SponsorFlow.services.OfferService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -50,6 +52,18 @@ public class OfferServiceImpl implements OfferService {
         Offer savedOffer = offerRepository.save(offer);
 
         return offerMappings.offerToResponse(savedOffer);
+    }
+
+    @Override
+    public Page<OfferResponseDto> getAllOffers(Pageable pageable) {
+        if(currentUserService.isBrand()){
+            Brand currentBrand = currentUserService.getCurrentBrand();
+            return offerRepository.findByBrand(currentBrand, pageable)
+                    .map(offerMappings::offerToResponse);
+        }
+        Influencer influencer = currentUserService.getCurrentInfluencer();
+        return offerRepository.findByInfluencer(influencer, pageable)
+                .map(offerMappings::offerToResponse);
     }
 
 }
