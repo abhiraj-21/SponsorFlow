@@ -45,7 +45,7 @@ public class OfferController {
 
     @PatchMapping("/{id}")
     @Operation(summary = "Accept or reject a pending sponsorship offer and trigger financial updates accordingly.")
-    public ResponseEntity<OfferResponseDto> updateStatus(@RequestBody OfferUpdateRequestDto offerUpdateRequestDto, @PathVariable Long id){
+    public ResponseEntity<OfferResponseDto> updateStatus(@Valid @RequestBody OfferUpdateRequestDto offerUpdateRequestDto, @PathVariable Long id){
         return ResponseEntity.ok(offerService.updateOfferStatus(offerUpdateRequestDto, id));
     }
 

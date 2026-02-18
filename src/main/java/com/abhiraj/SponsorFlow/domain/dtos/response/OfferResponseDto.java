@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 @Builder
 public class OfferResponseDto {
 
+    private Long offerId;
     private String brandName;
     private String influencerName;
     private BigDecimal amount;

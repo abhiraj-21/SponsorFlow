@@ -24,6 +24,7 @@ public class OfferMappings {
 
     public OfferResponseDto offerToResponse(Offer offer){
         return OfferResponseDto.builder()
+                .offerId(offer.getId())
                 .amount(offer.getAmount())
                 .offerStatus(offer.getOfferStatus())
                 .brandName(offer.getBrand().getName())
